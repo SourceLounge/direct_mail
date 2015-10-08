@@ -33,15 +33,9 @@
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 // DEFAULT initialization of a module [BEGIN]
-unset($MCONF);
-require ('conf.php');
-require ($BACK_PATH.'init.php');
-
-
-$LANG->includeLLFile('EXT:direct_mail/Resources/Private/Language/locallang_mod2-6.xml');
-//$LANG->includeLLFile('EXT:direct_mail/mod/locallang_csh_web_directmail.xml');
-$LANG->includeLLFile('EXT:direct_mail/Resources/Private/Language/locallang_csh_sysdmail.xml');
-$BE_USER->modAccess($MCONF,1);    // This checks permissions and exits if the users has no permission for entry.
+$GLOBALS['LANG']->includeLLFile('EXT:direct_mail/Resources/Private/Language/locallang_mod2-6.xml');
+$GLOBALS['LANG']->includeLLFile('EXT:direct_mail/Resources/Private/Language/locallang_csh_sysdmail.xml');
+$GLOBALS['BE_USER']->modAccess($MCONF,1);    // This checks permissions and exits if the users has no permission for entry.
 
 	// Make instance:
 /** @var $SOBE tx_directmail_dmail */
@@ -49,9 +43,9 @@ $SOBE = GeneralUtility::makeInstance('DirectMailTeam\\DirectMail\\Module\\Dmail'
 $SOBE->init();
 
 // Include files?
-foreach($SOBE->include_once as $INC_FILE) {
-	include_once($INC_FILE);
-}
+#foreach($SOBE->include_once as $INC_FILE) {
+#	include_once($INC_FILE);
+#}
 
 $SOBE->main();
 $SOBE->printContent();

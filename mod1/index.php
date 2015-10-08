@@ -27,18 +27,15 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+#use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-unset($MCONF);
-include ('conf.php');
-include ($BACK_PATH.'init.php');
-$LANG->includeLLFile('EXT:direct_mail/Resources/Private/Language/locallang_mod2-6.xml');
-$LANG->includeLLFile('EXT:direct_mail/Resources/Private/Language/locallang_csh_sysdmail.xml');
+#$GLOBALS['LANG']->includeLLFile('EXT:direct_mail/Resources/Private/Language/locallang_mod2-6.xml');
+#$GLOBALS['LANG']->includeLLFile('EXT:direct_mail/Resources/Private/Language/locallang_csh_sysdmail.xml');
 
 
 // Make instance:
 /** @var $SOBE NavFrame */
-$SOBE = GeneralUtility::makeInstance('DirectMailTeam\\DirectMail\\Module\\NavFrame');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('DirectMailTeam\\DirectMail\\Module\\NavFrame');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
