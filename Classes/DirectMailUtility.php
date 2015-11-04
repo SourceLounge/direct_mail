@@ -674,7 +674,7 @@ class DirectMailUtility {
 	 * @param	string		$tableParams: the additional table parameter
 	 * @return	string		HTML table
 	 */
-	static function formatTable($tableLines,$cellParams,$header,$cellcmd=array(),$tableParams='border="0" cellpadding="2" cellspacing="3"')	{
+	static function formatTable($tableLines, $cellParams, $header, $cellcmd = array(), $tableParams = 'class="typo3-dblist"') {
 		reset($tableLines);
 		$cols = count(current($tableLines));
 
@@ -688,15 +688,15 @@ class DirectMailUtility {
 				$v = $r[$k];
 				$v = strlen($v) ? ($cellcmd[$k]?$v:htmlspecialchars($v)) : "&nbsp;";
 				if ($first) {
-					$rowA[] = '<td class="t3-row-header">'.$v.'</td>';
+					$rowA[] = '<td>'.$v.'</td>';
 				} else {
 					$rowA[] = '<td'.($cellParams[$k]?" ".$cellParams[$k]:"").'>'.$v.'</td>';
 				}
 			}
-			$lines[] = '<tr class="'.($first?'bgColor2':'bgColor4').'">'.implode('',$rowA).'</tr>';
+			$lines[] = '<tr class="' . ($first ? 't3-row-header' : 'db_list_normal') . '">' . implode('', $rowA) . '</tr>';
 			$first = 0;
 		}
-		$table = '<table class="typo3-dblist" '.$tableParams.'>'.implode('',$lines).'</table>';
+		$table = '<table '.$tableParams.'>'.implode('',$lines).'</table>';
 		return $table;
 	}
 
@@ -791,7 +791,7 @@ class DirectMailUtility {
 					}
 				}
 
-				$lines[]='<tr>
+				$lines[]='<tr class="db_list_normal">
 				'.$tableIcon.'
 				'.$editLink.'
 				<td nowrap> '.htmlspecialchars($row['email']).' </td>
@@ -800,8 +800,8 @@ class DirectMailUtility {
 			}
 		}
 		if (count($lines))	{
-			$out= $GLOBALS["LANG"]->getLL('dmail_number_records') . '<strong>'.$count.'</strong><br />';
-			$out.='<table border="0" cellspacing="1" cellpadding="0">'.implode(LF,$lines).'</table>';
+			$out= $GLOBALS["LANG"]->getLL('dmail_number_records') . '<strong> '.$count.'</strong><br />';
+			$out .= '<table class="typo3-dblist">' . implode(LF, $lines) . '</table>';
 		}
 		return $out;
 	}
@@ -1066,6 +1066,7 @@ class DirectMailUtility {
 		$htmlmail->charset = $row['charset'];
 		$htmlmail->http_username = $params['http_username'];
 		$htmlmail->http_password = $params['http_password'];
+		$htmlmail->simulateUsergroup = $params['simulate_usergroup'];
 		$htmlmail->includeMedia = $row['includeMedia'];
 
 		if ($plainTextUrl) {
@@ -1159,7 +1160,42 @@ class DirectMailUtility {
 		if ($user && $pass && substr($url, 0, 7) == 'http://') {
 			$url = 'http://' . $user . ':' . $pass . '@' . substr($url, 7);
 		}
+		if ($params['simulate_usergroup'] && MathUtility::canBeInterpretedAsInteger($params['simulate_usergroup'])) {
+			$url = $url . '&dmail_fe_group=' . (int)$params['simulate_usergroup'] . '&access_token=' . self::createAndGetAccessToken();
+		}
 		return $url;
+	}
+
+	/**
+	 * Create an access token and save it in the Registry
+	 *
+	 * @return string
+	 */
+	public static function createAndGetAccessToken() {
+		/** @var \TYPO3\CMS\Core\Registry $registry */
+		$registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
+		$accessToken = GeneralUtility::getRandomHexString(32);
+		$registry->set('tx_directmail', 'accessToken', $accessToken);
+		return $accessToken;
+	}
+
+	/**
+	 * Create an access token and save it in the Registry
+	 *
+	 * @param string $accessToken The access token to validate
+	 * @return string
+	 */
+	public static function validateAndRemoveAccessToken($accessToken) {
+		/** @var \TYPO3\CMS\Core\Registry $registry */
+		$registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
+		$registeredAccessToken = $registry->get('tx_directmail', 'accessToken');
+		if (!empty($registeredAccessToken) && $registeredAccessToken === $accessToken) {
+			$registry->remove('tx_directmail', 'accessToken');
+			return TRUE;
+		} else {
+			$registry->remove('tx_directmail', 'accessToken');
+			return FALSE;
+		}
 	}
 
 	/**

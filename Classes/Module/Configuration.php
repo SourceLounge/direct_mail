@@ -249,7 +249,7 @@ class Configuration extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			if ($module == 'dmail') {
 						// Direct mail module
 				if (($this->pageinfo['doktype'] == 254) && ($this->pageinfo['module'] == 'dmail')) {
-					$markers['CONTENT'] = '<h2>' . $GLOBALS['LANG']->getLL('header_conf') . '</h2>'
+					$markers['CONTENT'] = '<h1>' . $GLOBALS['LANG']->getLL('header_conf') . '</h1>'
 					. $this->moduleContent();
 				} elseif ($this->id != 0) {
 					/** @var $flashMessage FlashMessage */
@@ -345,6 +345,7 @@ class Configuration extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			'box-6' => $GLOBALS['LANG']->getLL('configure_options_additional'),
 			'http_username' => array('short', $GLOBALS['LANG']->getLL('configure_http_username'), $GLOBALS['LANG']->getLL('configure_http_username_description').'<br />'.$GLOBALS['LANG']->getLL('configure_http_username_details')),
 			'http_password' => array('short', $GLOBALS['LANG']->getLL('configure_http_password'), $GLOBALS['LANG']->getLL('configure_http_password_description')),
+			'simulate_usergroup' => array('short', $GLOBALS['LANG']->getLL('configure_simulate_usergroup'), $GLOBALS['LANG']->getLL('configure_simulate_usergroup_description') . '<br />' . $GLOBALS['LANG']->getLL('configure_simulate_usergroup_details')),
 			'userTable' => array('short', $GLOBALS['LANG']->getLL('configure_user_table'), $GLOBALS['LANG']->getLL('configure_user_table_description')),
 			'test_tt_address_uids' => array('short', $GLOBALS['LANG']->getLL('configure_test_tt_address_uids'), $GLOBALS['LANG']->getLL('configure_test_tt_address_uids_description')),
 			'test_dmail_group_uids' => array('short', $GLOBALS['LANG']->getLL('configure_test_dmail_group_uids'), $GLOBALS['LANG']->getLL('configure_test_dmail_group_uids_description')),
